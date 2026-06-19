@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EaglerCustomClients</title>
+  <meta name="description" content="A clean list of custom EaglerCraft clients." />
+
+  <style>
+    :root {
+      --bg: #070914;
+      --panel: rgba(255, 255, 255, 0.08);
+      --panel-strong: rgba(255, 255, 255, 0.13);
+      --text: #f5f7ff;
+      --muted: #aab2d5;
+      --accent: #7c5cff;
+      --accent-2: #00e0ff;
+      --border: rgba(255, 255, 255, 0.14);
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(124, 92, 255, 0.35), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 224, 255, 0.18), transparent 35%),
+        var(--bg);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .navbar {
+      width: 100%;
+      padding: 20px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 9, 20, 0.75);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 1.2rem;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: var(--accent-2);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 0.95rem;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 90px 7% 50px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 22px;
+    }
+
+    .badge-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 18px var(--accent-2);
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      line-height: 0.95;
+      margin-bottom: 22px;
+      letter-spacing: -3px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      margin-top: 34px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-weight: 700;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      background: var(--panel-strong);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .button.primary {
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 18px 40px rgba(124, 92, 255, 0.25);
+    }
+
+    .section {
+      padding: 35px 7% 80px;
+    }
+
+    .section-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .section h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -1px;
+    }
+
+    .search-box {
+      width: min(100%, 360px);
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .search-box::placeholder {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      min-height: 260px;
+      padding: 22px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, var(--panel-strong), rgba(255, 255, 255, 0.045));
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -90px auto auto -90px;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124, 92, 255, 0.35), transparent 70%);
+      pointer-events: none;
+    }
+
+    .card h3 {
+      font-size: 1.55rem;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .card p {
+      color: var(--muted);
+      line-height: 1.55;
+      position: relative;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      position: relative;
+    }
+
+    .tag {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+      position: relative;
+    }
+
+    .small-button {
+      flex: 1;
+      min-width: 110px;
+      text-align: center;
+      padding: 11px 12px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.08);
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .small-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .small-button.launch {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+    }
+
+    .notice {
+      margin-top: 25px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    footer {
+      padding: 30px 7%;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    footer strong {
+      color: var(--text);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 720px) {
+      .navbar {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: 65px;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <a class="logo" href="./">Eagler<span>CustomClients</span></a>
+
+    <nav class="nav-links">
+      <a href="#clients">Clients</a>
+      <a href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Custom EaglerCraft client archive
+      </div>
+
+      <h1>
+        Find your next<br />
+        <span class="gradient-text">Eagler client.</span>
+      </h1>
+
+      <p>
+        EaglerCustomClients is a clean launcher page for custom EaglerCraft clients.
+        Pick a client below, open it in your browser, and use it only on servers where custom clients are allowed.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button primary" href="#clients">View Clients</a>
+        <a class="button" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">View Repo</a>
+      </div>
+    </section>
+
+    <section class="section" id="clients">
+      <div class="section-top">
+        <div>
+          <h2>Client List</h2>
+          <p style="color: var(--muted); margin-top: 8px;">Search and launch a client from the archive.</p>
+        </div>
+
+        <input
+          id="searchInput"
+          class="search-box"
+          type="search"
+          placeholder="Search clients..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="grid" id="clientGrid"></div>
+
+      <div class="notice">
+        <strong style="color: var(--text);">Note:</strong>
+        This page only links to the client folders in this repo. To add more clients,
+        add a new folder with an <code>index.html</code>, then add it to the client list in the script.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>EaglerCustomClients</strong></p>
+    <p>Made for Astro Tech Inc.</p>
+  </footer>
+
+  <script>
+    const clients = [
+      {
+        name: "AstraClient",
+        folder: "AstraClient",
+        description: "A custom EaglerCraft client build included in this archive.",
+        tags: ["Custom", "Browser", "Client"]
+      },
+      {
+        name: "PixelClient",
+        folder: "PixelClient",
+        description: "A simple client option for launching directly from the website.",
+        tags: ["Simple", "Client", "EaglerCraft"]
+      },
+      {
+        name: "ResentClient",
+        folder: "ResentClient",
+        description: "A popular-style EaglerCraft client entry stored in this repo.",
+        tags: ["Client", "Archive", "Web"]
+      },
+      {
+        name: "TuffClient",
+        folder: "TuffClient",
+        description: "Another custom client option available from the client archive.",
+        tags: ["Custom", "Launch", "Client"]
+      }
+    ];
+
+    const clientGrid = document.getElementById("clientGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    function createClientCard(client) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const tags = client.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+
+      card.innerHTML = `
+        <div>
+          <h3>${client.name}</h3>
+          <p>${client.description}</p>
+          <div class="tags">${tags}</div>
+        </div>
+
+        <div class="card-actions">
+          <a class="small-button launch" href="./${client.folder}/">Launch</a>
+          <a class="small-button" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients/tree/main/${client.folder}" target="_blank" rel="noopener">Files</a>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function renderClients(searchTerm = "") {
+      clientGrid.innerHTML = "";
+
+      const term = searchTerm.toLowerCase().trim();
+
+      const filteredClients = clients.filter(client => {
+        return (
+          client.name.toLowerCase().includes(term) ||
+          client.description.toLowerCase().includes(term) ||
+          client.tags.join(" ").toLowerCase().includes(term)
+        );
+      });
+
+      if (filteredClients.length === 0) {
+        clientGrid.innerHTML = `
+          <div class="notice" style="grid-column: 1 / -1;">
+            No clients found. Try a different search.
+          </div>
+        `;
+        return;
+      }
+
+      filteredClients.forEach(client => {
+        clientGrid.appendChild(createClientCard(client));
+      });
+    }
+
+    searchInput.addEventListener("input", event => {
+      renderClients(event.target.value);
+    });
+
+    renderClients();
+  </script>
+</body>
+</html>
