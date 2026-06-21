@@ -12,180 +12,166 @@
 
     body {
       margin: 0;
+      background: #101010;
+      color: #f1f1f1;
       font-family: Arial, Helvetica, sans-serif;
-      background: #0d0d0d;
-      color: #f2f2f2;
     }
 
     header {
-      width: 100%;
-      padding: 22px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 18px 20px;
+    }
+
+    .header-inner {
+      max-width: 950px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
     }
 
-    .logo {
-      font-size: 20px;
-      font-weight: 700;
+    .title {
+      font-size: 22px;
+      font-weight: bold;
       color: #fff;
       text-decoration: none;
     }
 
-    .repo {
+    .github {
       color: #aaa;
       text-decoration: none;
       font-size: 14px;
     }
 
-    .repo:hover {
+    .github:hover {
       color: #fff;
     }
 
     main {
-      max-width: 1050px;
+      max-width: 950px;
       margin: 0 auto;
-      padding: 60px 20px;
-    }
-
-    .hero {
-      margin-bottom: 45px;
+      padding: 45px 20px;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(38px, 7vw, 72px);
-      letter-spacing: -3px;
-      line-height: 0.95;
+      margin: 0 0 8px;
+      font-size: 42px;
+      letter-spacing: -1.5px;
     }
 
-    .subtitle {
+    .sub {
+      margin: 0 0 30px;
       color: #999;
-      font-size: 17px;
-      margin: 0;
+      font-size: 16px;
     }
 
-    .controls {
-      margin-bottom: 24px;
-    }
-
-    input {
+    .search {
       width: 100%;
-      max-width: 360px;
-      background: #151515;
-      border: 1px solid #2b2b2b;
+      max-width: 340px;
+      margin-bottom: 22px;
+      padding: 12px 14px;
+      background: #171717;
+      border: 1px solid #333;
+      border-radius: 7px;
       color: #fff;
-      padding: 13px 15px;
-      border-radius: 10px;
       outline: none;
       font-size: 15px;
     }
 
-    input:focus {
-      border-color: #555;
+    .search:focus {
+      border-color: #666;
     }
 
-    .grid {
+    .clients {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
     }
 
-    .card {
-      background: #151515;
-      border: 1px solid #252525;
-      border-radius: 16px;
-      padding: 20px;
-      min-height: 170px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: 0.15s ease;
+    .client {
+      background: #171717;
+      border: 1px solid #292929;
+      border-radius: 10px;
+      padding: 17px;
     }
 
-    .card:hover {
-      transform: translateY(-3px);
-      border-color: #444;
-      background: #181818;
+    .client:hover {
+      border-color: #4a4a4a;
+      background: #1b1b1b;
     }
 
-    .card h2 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: -0.5px;
+    .client-name {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 6px;
     }
 
-    .version {
+    .client-path {
       color: #888;
-      margin-top: 8px;
-      font-size: 14px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      word-break: break-word;
     }
 
     .buttons {
       display: flex;
-      gap: 10px;
-      margin-top: 28px;
+      gap: 8px;
     }
 
     .button {
       flex: 1;
       text-align: center;
-      padding: 11px 12px;
-      border-radius: 10px;
       text-decoration: none;
+      padding: 10px;
+      border-radius: 7px;
       font-size: 14px;
-      font-weight: 700;
-      border: 1px solid #333;
+      font-weight: bold;
+      background: #242424;
       color: #eee;
-      background: #1d1d1d;
+      border: 1px solid #363636;
     }
 
     .button:hover {
-      background: #242424;
+      background: #2d2d2d;
       border-color: #555;
     }
 
-    .button.primary {
-      background: #f2f2f2;
-      color: #0d0d0d;
-      border-color: #f2f2f2;
+    .button.launch {
+      background: #f1f1f1;
+      color: #101010;
+      border-color: #f1f1f1;
     }
 
-    .button.primary:hover {
+    .button.launch:hover {
       background: #dcdcdc;
     }
 
     .empty {
-      color: #888;
-      border: 1px solid #252525;
-      background: #151515;
-      border-radius: 16px;
-      padding: 20px;
       display: none;
+      color: #888;
+      background: #171717;
+      border: 1px solid #292929;
+      border-radius: 10px;
+      padding: 17px;
     }
 
     footer {
-      max-width: 1050px;
+      max-width: 950px;
       margin: 0 auto;
-      padding: 25px 20px 45px;
+      padding: 0 20px 35px;
       color: #777;
       font-size: 14px;
     }
 
     @media (max-width: 600px) {
-      header {
+      .header-inner {
         align-items: flex-start;
         flex-direction: column;
-        gap: 10px;
-      }
-
-      main {
-        padding-top: 45px;
       }
 
       h1 {
-        letter-spacing: -2px;
+        font-size: 34px;
       }
     }
   </style>
@@ -193,27 +179,21 @@
 
 <body>
   <header>
-    <a class="logo" href="./">EaglerCustomClients</a>
-    <a class="repo" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">
-      GitHub
-    </a>
+    <div class="header-inner">
+      <a class="title" href="./">EaglerCustomClients</a>
+      <a class="github" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">GitHub</a>
+    </div>
   </header>
 
   <main>
-    <section class="hero">
-      <h1>EaglerCustomClients</h1>
-      <p class="subtitle">Custom Eaglercraft clients.</p>
-    </section>
+    <h1>EaglerCustomClients</h1>
+    <p class="sub">Custom Eaglercraft clients</p>
 
-    <section class="controls">
-      <input id="search" type="text" placeholder="Search clients" />
-    </section>
+    <input class="search" id="search" type="text" placeholder="Search clients" />
 
-    <section class="grid" id="clientGrid"></section>
+    <section class="clients" id="clients"></section>
 
-    <div class="empty" id="emptyMessage">
-      No clients found.
-    </div>
+    <div class="empty" id="empty">No clients found.</div>
   </main>
 
   <footer>
@@ -222,70 +202,55 @@
 
   <script>
     const clients = [
-      {
-        name: "Astra Client",
-        version: "Client",
-        path: "AstraClient"
-      },
-      {
-        name: "Astra Client 2",
-        version: "Client",
-        path: "Astra2"
-      },
-      {
-        name: "Pixel Client",
-        version: "Client",
-        path: "PixelClient"
-      },
-      {
-        name: "Resent Client",
-        version: "Client",
-        path: "ResentClient"
-      },
-      {
-        name: "Tuff Client",
-        version: "Client",
-        path: "TuffClient"
-      }
+      { name: "Aero Client", path: "AeroClient" },
+      { name: "Astra Client 2", path: "Astra2" },
+      { name: "Astra Client", path: "AstraClient" },
+      { name: "DragonX Client", path: "DragonXClient" },
+      { name: "Flame Client", path: "FlameClient" },
+      { name: "Kone Client", path: "KoneClient" },
+      { name: "Pi Client", path: "PiClient" },
+      { name: "Pixel Client", path: "PixelClient" },
+      { name: "Resent Client", path: "ResentClient" },
+      { name: "Shadow Client", path: "ShadowClient" },
+      { name: "Starlike Client", path: "StarlikeClient" },
+      { name: "Tuff Client", path: "TuffClient" },
+      { name: "Uwu Client", path: "UwuClient" }
     ];
 
-    const grid = document.getElementById("clientGrid");
+    const clientsBox = document.getElementById("clients");
     const search = document.getElementById("search");
-    const emptyMessage = document.getElementById("emptyMessage");
+    const empty = document.getElementById("empty");
 
-    function renderClients(query = "") {
-      grid.innerHTML = "";
+    function renderClients() {
+      const query = search.value.toLowerCase().trim();
 
       const filtered = clients.filter(client =>
-        client.name.toLowerCase().includes(query.toLowerCase())
+        client.name.toLowerCase().includes(query) ||
+        client.path.toLowerCase().includes(query)
       );
 
-      emptyMessage.style.display = filtered.length ? "none" : "block";
+      clientsBox.innerHTML = "";
+      empty.style.display = filtered.length ? "none" : "block";
 
       filtered.forEach(client => {
-        const card = document.createElement("article");
-        card.className = "card";
+        const card = document.createElement("div");
+        card.className = "client";
 
         card.innerHTML = `
-          <div>
-            <h2>${client.name}</h2>
-            <div class="version">${client.version}</div>
-          </div>
+          <div class="client-name">${client.name}</div>
+          <div class="client-path">${client.path}</div>
 
           <div class="buttons">
-            <a class="button primary" href="./${client.path}/">Launch</a>
+            <a class="button launch" href="./${client.path}/">Launch</a>
             <a class="button" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients/tree/main/${client.path}" target="_blank" rel="noopener">Files</a>
           </div>
         `;
 
-        grid.appendChild(card);
+        clientsBox.appendChild(card);
       });
     }
 
-    search.addEventListener("input", () => {
-      renderClients(search.value);
-    });
-
+    search.addEventListener("input", renderClients);
     renderClients();
   </script>
 </body>
