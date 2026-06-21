@@ -101,10 +101,18 @@
       background: #1b1b1b;
     }
 
+    .client-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
     .client-name {
       font-size: 19px;
       font-weight: bold;
-      margin-bottom: 6px;
+      line-height: 1.2;
     }
 
     .client-path {
@@ -112,6 +120,64 @@
       font-size: 13px;
       margin-bottom: 18px;
       word-break: break-word;
+    }
+
+    .status {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: help;
+      user-select: none;
+    }
+
+    .status.good {
+      background: #1f8f45;
+      color: #fff;
+    }
+
+    .status.warn {
+      background: #e6b800;
+      color: #101010;
+    }
+
+    .status.bad {
+      background: #c73636;
+      color: #fff;
+    }
+
+    .status::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      right: 0;
+      top: 31px;
+      width: 260px;
+      background: #080808;
+      border: 1px solid #333;
+      color: #eee;
+      padding: 10px 11px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: normal;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: 0.12s ease;
+      z-index: 20;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    .status:hover::after,
+    .status:focus::after {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .buttons {
@@ -173,6 +239,12 @@
       h1 {
         font-size: 34px;
       }
+
+      .status::after {
+        right: auto;
+        left: -210px;
+        width: 240px;
+      }
     }
   </style>
 </head>
@@ -201,32 +273,110 @@
   </footer>
 
   <script>
+    const statusText = {
+      good: "This client is a verified client, known for boosting FPS and having a lot of features built in.",
+      warn: "This client is known for being a straight up vanilla client, laggy, some features not working, or having little to no modifications.",
+      bad: "This client runs horrible and gets low FPS, or doesn't work at all. We are working on fixing this."
+    };
+
     const clients = [
-      { name: "Aero Client", path: "AeroClient" },
-      { name: "Astra Client 2", path: "Astra2" },
-      { name: "Astra Client", path: "AstraClient" },
-      { name: "DragonX Client", path: "DragonXClient" },
-      { name: "Flame Client", path: "FlameClient" },
-      { name: "Kone Client", path: "KoneClient" },
-      { name: "Pi Client", path: "PiClient" },
-      { name: "Pixel Client", path: "PixelClient" },
-      { name: "Resent Client", path: "ResentClient" },
-      { name: "Shadow Client", path: "ShadowClient" },
-      { name: "Starlike Client", path: "StarlikeClient" },
-      { name: "Tuff Client", path: "TuffClient" },
-      { name: "Uwu Client", path: "UwuClient" }
+      {
+        name: "Aero Client",
+        path: "AeroClient",
+        status: "warn",
+        note: "Laggy on Chromebooks"
+      },
+      {
+        name: "Astra Client 2",
+        path: "Astra2",
+        status: "warn",
+        note: "Laggy on Chromebooks"
+      },
+      {
+        name: "Astra Client",
+        path: "AstraClient",
+        status: "warn",
+        note: "Multiplayer doesn't work"
+      },
+      {
+        name: "DragonX Client",
+        path: "DragonXClient",
+        status: "warn",
+        note: "Singleplayer missing, mod menu can be inconsistent"
+      },
+      {
+        name: "Flame Client",
+        path: "FlameClient",
+        status: "warn",
+        note: "Laggy, missing singleplayer"
+      },
+      {
+        name: "Kone Client",
+        path: "KoneClient",
+        status: "bad",
+        note: "Doesn't launch"
+      },
+      {
+        name: "Pi Client",
+        path: "PiClient",
+        status: "warn",
+        note: "Missing singleplayer, mod menu can be inconsistent"
+      },
+      {
+        name: "Pixel Client",
+        path: "PixelClient",
+        status: "good",
+        note: "Verified"
+      },
+      {
+        name: "Resent Client",
+        path: "ResentClient",
+        status: "good",
+        note: "Verified"
+      },
+      {
+        name: "Shadow Client",
+        path: "ShadowClient",
+        status: "warn",
+        note: "Vanilla client"
+      },
+      {
+        name: "Starlike Client",
+        path: "StarlikeClient",
+        status: "bad",
+        note: "Doesn't work, WIP"
+      },
+      {
+        name: "Tuff Client",
+        path: "TuffClient",
+        status: "warn",
+        note: "Weird UI, no FPS boosting"
+      },
+      {
+        name: "Uwu Client",
+        path: "UwuClient",
+        status: "warn",
+        note: "Vanilla client"
+      }
     ];
 
     const clientsBox = document.getElementById("clients");
     const search = document.getElementById("search");
     const empty = document.getElementById("empty");
 
+    function statusIcon(status) {
+      if (status === "good") return "✓";
+      if (status === "bad") return "×";
+      return "";
+    }
+
     function renderClients() {
       const query = search.value.toLowerCase().trim();
 
       const filtered = clients.filter(client =>
         client.name.toLowerCase().includes(query) ||
-        client.path.toLowerCase().includes(query)
+        client.path.toLowerCase().includes(query) ||
+        client.note.toLowerCase().includes(query)
       );
 
       clientsBox.innerHTML = "";
@@ -236,8 +386,16 @@
         const card = document.createElement("div");
         card.className = "client";
 
+        const tooltip = `${statusText[client.status]} ${client.note}`;
+
         card.innerHTML = `
-          <div class="client-name">${client.name}</div>
+          <div class="client-top">
+            <div class="client-name">${client.name}</div>
+            <span class="status ${client.status}" tabindex="0" data-tooltip="${tooltip}">
+              ${statusIcon(client.status)}
+            </span>
+          </div>
+
           <div class="client-path">${client.path}</div>
 
           <div class="buttons">
