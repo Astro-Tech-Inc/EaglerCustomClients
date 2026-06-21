@@ -1,0 +1,149 @@
+package net.minecraft.network.play.server;
+
+import java.io.IOException;
+
+import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.INetHandlerPlayClient;
+
+/**
+ * + This portion of EaglercraftX contains deobfuscated Minecraft 1.8 source
+ * code.
+ *
+ * Minecraft 1.8.8 bytecode is (c) 2015 Mojang AB. "Do not distribute!" Mod
+ * Coder Pack v9.18 deobfuscation configs are (c) Copyright by the MCP Team
+ *
+ * EaglercraftX 1.8 patch files (c) 2022-2025 lax1dude, ayunami2000. All Rights
+ * Reserved.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+public class S39PacketPlayerAbilities implements Packet<INetHandlerPlayClient> {
+	private boolean invulnerable;
+	private boolean flying;
+	private boolean allowFlying;
+	private boolean creativeMode;
+	private float flySpeed;
+	private float walkSpeed;
+
+	public S39PacketPlayerAbilities() {
+	}
+
+	public S39PacketPlayerAbilities(PlayerCapabilities capabilities) {
+		this.setInvulnerable(capabilities.disableDamage);
+		this.setFlying(capabilities.isFlying);
+		this.setAllowFlying(capabilities.allowFlying);
+		this.setCreativeMode(capabilities.isCreativeMode);
+		this.setFlySpeed(capabilities.getFlySpeed());
+		this.setWalkSpeed(capabilities.getWalkSpeed());
+	}
+
+	public float getFlySpeed() {
+		return this.flySpeed;
+	}
+
+	public float getWalkSpeed() {
+		return this.walkSpeed;
+	}
+
+	public boolean isAllowFlying() {
+		return this.allowFlying;
+	}
+
+	public boolean isCreativeMode() {
+		return this.creativeMode;
+	}
+
+	public boolean isFlying() {
+		return this.flying;
+	}
+
+	public boolean isInvulnerable() {
+		return this.invulnerable;
+	}
+
+	/**
+	 * + Passes this Packet on to the NetHandler for processing.
+	 */
+	@Override
+	public void processPacket(INetHandlerPlayClient inethandlerplayclient) {
+		inethandlerplayclient.handlePlayerAbilities(this);
+	}
+
+	/**
+	 * + Reads the raw packet data from the data stream.
+	 */
+	@Override
+	public void readPacketData(PacketBuffer parPacketBuffer) throws IOException {
+		byte b0 = parPacketBuffer.readByte();
+		this.setInvulnerable((b0 & 1) > 0);
+		this.setFlying((b0 & 2) > 0);
+		this.setAllowFlying((b0 & 4) > 0);
+		this.setCreativeMode((b0 & 8) > 0);
+		this.setFlySpeed(parPacketBuffer.readFloat());
+		this.setWalkSpeed(parPacketBuffer.readFloat());
+	}
+
+	public void setAllowFlying(boolean isAllowFlying) {
+		this.allowFlying = isAllowFlying;
+	}
+
+	public void setCreativeMode(boolean isCreativeMode) {
+		this.creativeMode = isCreativeMode;
+	}
+
+	public void setFlying(boolean isFlying) {
+		this.flying = isFlying;
+	}
+
+	public void setFlySpeed(float flySpeedIn) {
+		this.flySpeed = flySpeedIn;
+	}
+
+	public void setInvulnerable(boolean isInvulnerable) {
+		this.invulnerable = isInvulnerable;
+	}
+
+	public void setWalkSpeed(float walkSpeedIn) {
+		this.walkSpeed = walkSpeedIn;
+	}
+
+	/**
+	 * + Writes the raw packet data to the data stream.
+	 */
+	@Override
+	public void writePacketData(PacketBuffer parPacketBuffer) throws IOException {
+		byte b0 = 0;
+		if (this.isInvulnerable()) {
+			b0 = (byte) (b0 | 1);
+		}
+
+		if (this.isFlying()) {
+			b0 = (byte) (b0 | 2);
+		}
+
+		if (this.isAllowFlying()) {
+			b0 = (byte) (b0 | 4);
+		}
+
+		if (this.isCreativeMode()) {
+			b0 = (byte) (b0 | 8);
+		}
+
+		parPacketBuffer.writeByte(b0);
+		parPacketBuffer.writeFloat(this.flySpeed);
+		parPacketBuffer.writeFloat(this.walkSpeed);
+	}
+}
