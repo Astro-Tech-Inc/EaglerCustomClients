@@ -4,246 +4,868 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EaglerCustomClients</title>
+  <meta name="description" content="A curated index of custom Eaglercraft clients, with real notes on what actually works." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
+    :root {
+      --bg: #0a0b0e;
+      --bg-soft: #101217;
+      --panel: #121319;
+      --panel-hover: #191c24;
+      --border: #23262f;
+      --border-hover: #383d4b;
+      --text: #f1f2f5;
+      --text-dim: #9ba0ad;
+      --text-faint: #676c7a;
+      --accent: #e8ab4d;
+      --accent-soft: rgba(232, 171, 77, 0.14);
+      --accent-strong: #f2c069;
+      --good: #3fb984;
+      --good-soft: rgba(63, 185, 132, 0.14);
+      --warn: #e0a83e;
+      --warn-soft: rgba(224, 168, 62, 0.14);
+      --bad: #e0605a;
+      --bad-soft: rgba(224, 96, 90, 0.14);
+      --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+      --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+      --font-body: "Inter", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --header-h: 56px;
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html {
+      color-scheme: dark;
+    }
+
     body {
       margin: 0;
-      background: #101010;
-      color: #f1f1f1;
-      font-family: Arial, Helvetica, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
     }
+
+    a {
+      color: inherit;
+    }
+
+    button {
+      font-family: var(--font-body);
+    }
+
+    /* ---------- top bar ---------- */
 
     header {
-      border-bottom: 1px solid #2a2a2a;
-      padding: 18px 20px;
-    }
-
-    .header-inner {
-      max-width: 950px;
-      margin: 0 auto;
+      height: var(--header-h);
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 15px;
+      justify-content: space-between;
+      padding: 0 16px;
+      gap: 16px;
+      z-index: 30;
     }
 
-    .title {
-      font-size: 22px;
-      font-weight: bold;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .brand-word {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
       color: #fff;
-      text-decoration: none;
     }
 
-    .github {
-      color: #aaa;
+    .brand-word .dim {
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .github-link {
+      color: var(--text-dim);
       text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 4px;
+      display: none;
+    }
+
+    .github-link:hover {
+      color: var(--text);
+    }
+
+    /* ---------- banner ---------- */
+
+    .banner {
+      display: none;
+      flex-shrink: 0;
+      padding: 8px 16px;
+      z-index: 25;
+    }
+
+    .banner.show {
+      display: block;
+    }
+
+    .banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid;
+    }
+
+    .banner-inner.ok {
+      background: var(--good-soft);
+      border-color: rgba(63, 185, 132, 0.3);
+      color: #a9e8cd;
+    }
+
+    .banner-inner.error {
+      background: var(--bad-soft);
+      border-color: rgba(224, 96, 90, 0.3);
+      color: #f3b9b6;
+    }
+
+    .banner-close {
+      background: none;
+      border: none;
+      color: inherit;
+      opacity: 0.7;
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      padding: 2px;
+    }
+
+    .banner-close:hover {
+      opacity: 1;
+    }
+
+    /* ---------- app shell: sidebar + detail ---------- */
+
+    .app {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .sidebar {
+      width: 300px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .sidebar-head {
+      padding: 14px 14px 10px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-title h1 {
+      margin: 0;
+      font-family: var(--font-display);
       font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
     }
 
-    .github:hover {
-      color: #fff;
+    .sidebar-count {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-faint);
     }
 
-    main {
-      max-width: 950px;
-      margin: 0 auto;
-      padding: 45px 20px;
+    .search-wrap {
+      position: relative;
+      margin-bottom: 10px;
     }
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: 42px;
-      letter-spacing: -1.5px;
-    }
-
-    .sub {
-      margin: 0 0 30px;
-      color: #999;
-      font-size: 16px;
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-faint);
+      pointer-events: none;
     }
 
     .search {
       width: 100%;
-      max-width: 340px;
-      margin-bottom: 22px;
-      padding: 12px 14px;
-      background: #171717;
-      border: 1px solid #333;
+      padding: 8px 10px 8px 30px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
       border-radius: 7px;
-      color: #fff;
+      color: var(--text);
       outline: none;
-      font-size: 15px;
+      font-size: 13.5px;
+      font-family: var(--font-body);
+      transition: border-color 0.15s ease;
+    }
+
+    .search::placeholder {
+      color: var(--text-faint);
     }
 
     .search:focus {
-      border-color: #666;
+      border-color: var(--accent);
     }
 
-    .clients {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 14px;
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .client {
-      background: #171717;
-      border: 1px solid #292929;
-      border-radius: 10px;
-      padding: 17px;
+    .filter-chip {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 5px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-faint);
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
     }
 
-    .client:hover {
-      border-color: #4a4a4a;
-      background: #1b1b1b;
+    .filter-chip:hover {
+      color: var(--text-dim);
+      border-color: var(--border-hover);
     }
 
-    .client-top {
+    .filter-chip.active {
+      background: var(--accent-soft);
+      border-color: rgba(232, 171, 77, 0.4);
+      color: var(--accent-strong);
+    }
+
+    .client-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 8px 12px;
+    }
+
+    .client-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+    }
+
+    .client-row:hover {
+      background: var(--panel-hover);
+    }
+
+    .client-row.active {
+      background: var(--panel);
+      border-color: var(--border);
+    }
+
+    .row-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .row-dot.good { background: var(--good); }
+    .row-dot.warn { background: var(--warn); }
+    .row-dot.bad { background: var(--bad); }
+
+    .row-text {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .row-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .client-row.active .row-name {
+      color: #fff;
+    }
+
+    .row-path {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    .list-empty {
+      display: none;
+      color: var(--text-faint);
+      font-size: 13px;
+      text-align: center;
+      padding: 30px 14px;
+    }
+
+    /* ---------- detail pane ---------- */
+
+    .detail {
+      flex: 1;
+      overflow-y: auto;
+      min-width: 0;
+      background:
+        radial-gradient(900px 420px at 100% -10%, rgba(232, 171, 77, 0.07), transparent 55%),
+        var(--bg);
+    }
+
+    .detail-inner {
+      max-width: 640px;
+      padding: 48px 40px;
+    }
+
+    .detail-head {
       display: flex;
       align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap: 16px;
+      margin-bottom: 22px;
     }
 
-    .client-name {
-      font-size: 19px;
-      font-weight: bold;
-      line-height: 1.2;
-    }
-
-    .client-path {
-      color: #888;
-      font-size: 13px;
-      margin-bottom: 18px;
-      word-break: break-word;
-    }
-
-    .status {
-      position: relative;
-      width: 22px;
-      height: 22px;
-      min-width: 22px;
-      border-radius: 50%;
-      display: inline-flex;
+    .detail-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      display: flex;
       align-items: center;
       justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      color: #14161d;
+    }
+
+    .detail-name {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      color: #fff;
+      line-height: 1.15;
+      margin: 2px 0 6px;
+    }
+
+    .detail-path {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--text-faint);
+    }
+
+    .pill {
+      display: inline-flex;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 4px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
+    .pill.good { color: var(--good); background: var(--good-soft); }
+    .pill.warn { color: var(--warn); background: var(--warn-soft); }
+    .pill.bad { color: var(--bad); background: var(--bad-soft); }
+
+    .detail-note {
+      color: var(--text-dim);
       font-size: 15px;
-      font-weight: bold;
-      cursor: help;
-      user-select: none;
+      line-height: 1.65;
+      margin: 0 0 28px;
+      max-width: 520px;
     }
 
-    .status.good {
-      background: #1f8f45;
-      color: #fff;
-    }
-
-    .status.warn {
-      background: #e6b800;
-      color: #101010;
-    }
-
-    .status.bad {
-      background: #c73636;
-      color: #fff;
-    }
-
-    .status::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      right: 0;
-      top: 31px;
-      width: 260px;
-      background: #080808;
-      border: 1px solid #333;
-      color: #eee;
-      padding: 10px 11px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: normal;
-      line-height: 1.4;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-4px);
-      transition: 0.12s ease;
-      z-index: 20;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-    }
-
-    .status:hover::after,
-    .status:focus::after {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .buttons {
+    .detail-actions {
       display: flex;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      padding: 12px 22px;
+      border-radius: 9px;
+      font-size: 14.5px;
+      font-weight: 700;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #1a1200;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn-launch:hover {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    .btn-launch.locked {
+      background: transparent;
+      color: var(--text-dim);
+      border-color: var(--border);
+    }
+
+    .btn-launch.locked:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+      background: transparent;
+    }
+
+    .btn-files {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      padding: 12px 18px;
+      border-radius: 9px;
+      font-size: 14.5px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-files:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+
+    .spec-list {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .spec-row:last-child {
+      border-bottom: none;
+    }
+
+    .spec-key {
+      color: var(--text-faint);
+    }
+
+    .spec-val {
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+
+    .detail-empty {
+      color: var(--text-faint);
+      font-size: 14px;
+      padding: 48px 40px;
+    }
+
+    /* ---------- auth: header controls ---------- */
+
+    .auth-buttons {
+      display: flex;
+      align-items: center;
       gap: 8px;
     }
 
-    .button {
-      flex: 1;
-      text-align: center;
-      text-decoration: none;
-      padding: 10px;
+    .btn {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 12px;
       border-radius: 7px;
-      font-size: 14px;
-      font-weight: bold;
-      background: #242424;
-      color: #eee;
-      border: 1px solid #363636;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
     }
 
-    .button:hover {
-      background: #2d2d2d;
-      border-color: #555;
+    .btn:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
     }
 
-    .button.launch {
-      background: #f1f1f1;
-      color: #101010;
-      border-color: #f1f1f1;
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #1a1200;
     }
 
-    .button.launch:hover {
-      background: #dcdcdc;
+    .btn.primary:hover {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
     }
 
-    .empty {
-      display: none;
-      color: #888;
-      background: #171717;
-      border: 1px solid #292929;
+    .user-menu {
+      position: relative;
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px 5px 5px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .user-chip:hover {
+      border-color: var(--border-hover);
+    }
+
+    .user-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #1a1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    .user-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      min-width: 190px;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 17px;
+      box-shadow: var(--shadow-lg);
+      padding: 6px;
+      display: none;
+      z-index: 40;
     }
 
-    footer {
-      max-width: 950px;
-      margin: 0 auto;
-      padding: 0 20px 35px;
-      color: #777;
+    .user-dropdown.open {
+      display: block;
+    }
+
+    .user-dropdown .email {
+      padding: 8px 10px 6px;
+      color: var(--text-faint);
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .user-dropdown button {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .user-dropdown button:hover {
+      background: var(--panel-hover);
+      color: var(--text);
+    }
+
+    /* ---------- modal ---------- */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 7, 9, 0.7);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 380px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: var(--shadow-lg);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 21px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal-sub {
+      color: var(--text-dim);
+      font-size: 13.5px;
+      margin: 0 0 20px;
+      line-height: 1.5;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
       font-size: 14px;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 0.15s ease;
     }
 
-    @media (max-width: 600px) {
-      .header-inner {
-        align-items: flex-start;
+    .field input:focus {
+      border-color: var(--accent);
+    }
+
+    .field-hint {
+      margin: 6px 0 0;
+      font-size: 11.5px;
+      color: var(--text-faint);
+    }
+
+    .form-error {
+      display: none;
+      background: var(--bad-soft);
+      border: 1px solid rgba(224, 96, 90, 0.3);
+      color: #f3b9b6;
+      font-size: 12.5px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .form-note {
+      display: none;
+      background: var(--good-soft);
+      border: 1px solid rgba(63, 185, 132, 0.3);
+      color: #a9e8cd;
+      font-size: 12.5px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    .form-note.show {
+      display: block;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #1a1200;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease, opacity 0.15s ease;
+    }
+
+    .submit-btn:hover {
+      background: var(--accent-strong);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .modal-foot {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--accent-strong);
+      font-size: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .link-btn:hover {
+      text-decoration: underline;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .recovery-codes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--text);
+    }
+
+    /* ---------- responsive ---------- */
+
+    @media (max-width: 780px) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
+      .app {
         flex-direction: column;
       }
 
-      h1 {
-        font-size: 34px;
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
       }
 
-      .status::after {
-        right: auto;
-        left: -210px;
-        width: 240px;
+      .client-list {
+        max-height: 260px;
+      }
+
+      .detail-inner {
+        padding: 30px 20px;
+      }
+
+      .github-link {
+        display: inline;
       }
     }
   </style>
@@ -251,165 +873,623 @@
 
 <body>
   <header>
-    <div class="header-inner">
-      <a class="title" href="./">EaglerCustomClients</a>
-      <a class="github" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">GitHub</a>
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="8" fill="#e8ab4d" />
+        <path d="M8 21L16 9L24 21H19.5L16 15.5L12.5 21H8Z" fill="#0a0b0e" />
+      </svg>
+      <span class="brand-word">Eagler<span class="dim">CustomClients</span></span>
+    </a>
+    <div class="header-right">
+      <a class="github-link" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">GitHub</a>
+      <div id="authArea" class="auth-buttons"></div>
     </div>
   </header>
 
-  <main>
-    <h1>EaglerCustomClients</h1>
-    <p class="sub">Custom Eaglercraft clients</p>
+  <div class="banner" id="banner">
+    <div class="banner-inner" id="bannerInner">
+      <span id="bannerText"></span>
+      <button class="banner-close" id="bannerClose" aria-label="Dismiss">&times;</button>
+    </div>
+  </div>
 
-    <input class="search" id="search" type="text" placeholder="Search clients" />
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="sidebar-title">
+          <h1>Clients</h1>
+          <span class="sidebar-count" id="sidebarCount"></span>
+        </div>
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input class="search" id="search" type="text" placeholder="Search clients" />
+        </div>
+        <div class="filters" id="filters">
+          <button class="filter-chip active" data-status="all">All</button>
+          <button class="filter-chip" data-status="good">Verified</button>
+          <button class="filter-chip" data-status="warn">Playable</button>
+          <button class="filter-chip" data-status="bad">Broken</button>
+        </div>
+      </div>
+      <div class="client-list" id="clientList"></div>
+      <div class="list-empty" id="listEmpty">No clients match your search.</div>
+    </aside>
 
-    <section class="clients" id="clients"></section>
+    <section class="detail" id="detail"></section>
+  </div>
 
-    <div class="empty" id="empty">No clients found.</div>
-  </main>
+  <!-- Auth modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <!-- Login -->
+      <div class="view active" id="view-login">
+        <div class="modal-head">
+          <span class="modal-title">Log in</span>
+          <button class="modal-close" data-close>&times;</button>
+        </div>
+        <p class="modal-sub">Log in with your LowFrame account to launch clients.</p>
+        <div class="form-error" id="login-error"></div>
+        <form id="loginForm">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input id="login-password" type="password" autocomplete="current-password" required />
+          </div>
+          <button class="submit-btn" type="submit">Log in</button>
+        </form>
+        <div class="modal-foot">
+          <button class="link-btn" data-view="forgot">Forgot password?</button>
+        </div>
+        <div class="modal-foot">
+          No account? <button class="link-btn" data-view="signup">Sign up</button>
+        </div>
+      </div>
 
-  <footer>
-    EaglerCustomClients
-  </footer>
+      <!-- Sign up -->
+      <div class="view" id="view-signup">
+        <div class="modal-head">
+          <span class="modal-title">Create account</span>
+          <button class="modal-close" data-close>&times;</button>
+        </div>
+        <p class="modal-sub">One LowFrame account, works across every LowFrame site.</p>
+        <div class="form-error" id="signup-error"></div>
+        <form id="signupForm">
+          <div class="field">
+            <label for="signup-username">Username</label>
+            <input id="signup-username" type="text" autocomplete="username" placeholder="Optional" />
+          </div>
+          <div class="field">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <input id="signup-password" type="password" autocomplete="new-password" required />
+            <p class="field-hint">At least 8 characters.</p>
+          </div>
+          <button class="submit-btn" type="submit">Create account</button>
+        </form>
+        <div class="modal-foot">
+          Already have an account? <button class="link-btn" data-view="login">Log in</button>
+        </div>
+      </div>
+
+      <!-- Recovery codes (post-signup) -->
+      <div class="view" id="view-recovery">
+        <div class="modal-head">
+          <span class="modal-title">Save your recovery codes</span>
+        </div>
+        <p class="modal-sub">We've sent a verification link to your email. Keep these codes somewhere safe &mdash; each one can be used once to recover your account. They won't be shown again.</p>
+        <div class="recovery-codes" id="recoveryCodes"></div>
+        <button class="submit-btn" id="recoveryDoneBtn">I've saved these codes</button>
+      </div>
+
+      <!-- Forgot password -->
+      <div class="view" id="view-forgot">
+        <div class="modal-head">
+          <span class="modal-title">Reset password</span>
+          <button class="modal-close" data-close>&times;</button>
+        </div>
+        <p class="modal-sub">Enter your account email and we'll send you a reset link.</p>
+        <div class="form-error" id="forgot-error"></div>
+        <div class="form-note" id="forgot-note"></div>
+        <form id="forgotForm">
+          <div class="field">
+            <label for="forgot-email">Email</label>
+            <input id="forgot-email" type="email" autocomplete="email" required />
+          </div>
+          <button class="submit-btn" type="submit">Send reset link</button>
+        </form>
+        <div class="modal-foot">
+          <button class="link-btn" data-view="login">Back to log in</button>
+        </div>
+      </div>
+
+      <!-- Reset password (from emailed link) -->
+      <div class="view" id="view-reset">
+        <div class="modal-head">
+          <span class="modal-title">Set a new password</span>
+        </div>
+        <p class="modal-sub">Choose a new password for your LowFrame account.</p>
+        <div class="form-error" id="reset-error"></div>
+        <div class="form-note" id="reset-note"></div>
+        <form id="resetForm">
+          <div class="field">
+            <label for="reset-password">New password</label>
+            <input id="reset-password" type="password" autocomplete="new-password" required />
+            <p class="field-hint">At least 8 characters.</p>
+          </div>
+          <button class="submit-btn" type="submit">Update password</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const statusText = {
-      good: "This client is a verified client, known for boosting FPS and having a lot of features built in.",
-      warn: "This client is known for being a straight up vanilla client, laggy, some features not working, or having little to no modifications.",
-      bad: "This client runs horrible and gets low FPS, or doesn't work at all. We are working on fixing this."
+    /* ============ auth: LowFrame account client ============ */
+
+    const AUTH_API = "https://eagler-auth.897mmo0216.workers.dev";
+    const TOKEN_KEY = "lf_session_token";
+
+    const Auth = {
+      token: localStorage.getItem(TOKEN_KEY) || "",
+      user: null,
+
+      async call(path, options = {}) {
+        const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+        if (this.token) headers.Authorization = `Bearer ${this.token}`;
+        const res = await fetch(AUTH_API + path, { ...options, headers });
+        let data = {};
+        try { data = await res.json(); } catch {}
+        if (!res.ok) throw new Error(data.error || "Something went wrong.");
+        return data;
+      },
+
+      setToken(token) {
+        this.token = token || "";
+        if (token) localStorage.setItem(TOKEN_KEY, token);
+        else localStorage.removeItem(TOKEN_KEY);
+      },
+
+      async refresh() {
+        if (!this.token) { this.user = null; return null; }
+        try {
+          const data = await this.call("/me");
+          this.user = data.user;
+        } catch {
+          this.setToken("");
+          this.user = null;
+        }
+        return this.user;
+      },
+
+      signup(username, email, password) {
+        return this.call("/signup", { method: "POST", body: JSON.stringify({ username, email, password }) });
+      },
+
+      async login(email, password) {
+        const data = await this.call("/login", { method: "POST", body: JSON.stringify({ email, password }) });
+        this.setToken(data.sessionToken);
+        this.user = data.user;
+        return data;
+      },
+
+      async logout() {
+        try { await this.call("/logout", { method: "POST" }); } catch {}
+        this.setToken("");
+        this.user = null;
+      },
+
+      requestPasswordReset(email) {
+        return this.call("/request-password-reset", { method: "POST", body: JSON.stringify({ email }) });
+      },
+
+      resetPassword(token, newPassword) {
+        return this.call("/reset-password", { method: "POST", body: JSON.stringify({ token, newPassword }) });
+      },
     };
 
-    const clients = [
-      {
-        name: "Aero Client",
-        path: "AeroClient",
-        status: "warn",
-        note: "Laggy on Chromebooks"
-      },
-      {
-        name: "Astra Client 2",
-        path: "Astra2",
-        status: "warn",
-        note: "Laggy on Chromebooks"
-      },
-      {
-        name: "Astra Client",
-        path: "AstraClient",
-        status: "warn",
-        note: "Multiplayer doesn't work"
-      },
-      {
-        name: "DragonX Client",
-        path: "DragonXClient",
-        status: "warn",
-        note: "Singleplayer missing, mod menu can be inconsistent"
-      },
-      {
-        name: "Flame Client",
-        path: "FlameClient",
-        status: "warn",
-        note: "Laggy, missing singleplayer"
-      },
-      {
-        name: "Kone Client",
-        path: "KoneClient",
-        status: "bad",
-        note: "Doesn't launch"
-      },
-      {
-        name: "Pi Client",
-        path: "PiClient",
-        status: "warn",
-        note: "Missing singleplayer, mod menu can be inconsistent"
-      },
-      {
-        name: "Pixel Client",
-        path: "PixelClient",
-        status: "good",
-        note: "Verified"
-      },
-      {
-        name: "Resent Client",
-        path: "ResentClient",
-        status: "good",
-        note: "Verified"
-      },
-      {
-        name: "Shadow Client",
-        path: "ShadowClient",
-        status: "warn",
-        note: "Vanilla client"
-      },
-      {
-        name: "Starlike Client",
-        path: "StarlikeClient",
-        status: "bad",
-        note: "Doesn't work, WIP"
-      },
-      {
-        name: "Tuff Client",
-        path: "TuffClient",
-        status: "warn",
-        note: "Weird UI, no FPS boosting"
-      },
-      {
-        name: "Uwu Client",
-        path: "UwuClient",
-        status: "warn",
-        note: "Vanilla client"
-      }
-    ];
-
-    const clientsBox = document.getElementById("clients");
-    const search = document.getElementById("search");
-    const empty = document.getElementById("empty");
-
-    function statusIcon(status) {
-      if (status === "good") return "✓";
-      if (status === "bad") return "×";
-      return "";
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+      }[c]));
     }
 
-    function renderClients() {
-      const query = search.value.toLowerCase().trim();
+    /* ============ header auth UI ============ */
 
-      const filtered = clients.filter(client =>
-        client.name.toLowerCase().includes(query) ||
-        client.path.toLowerCase().includes(query) ||
-        client.note.toLowerCase().includes(query)
-      );
+    const authArea = document.getElementById("authArea");
 
-      clientsBox.innerHTML = "";
-      empty.style.display = filtered.length ? "none" : "block";
+    function initials(user) {
+      const source = (user.username || user.email || "?").trim();
+      return source.slice(0, 1).toUpperCase();
+    }
 
-      filtered.forEach(client => {
-        const card = document.createElement("div");
-        card.className = "client";
-
-        const tooltip = `${statusText[client.status]} ${client.note}`;
-
-        card.innerHTML = `
-          <div class="client-top">
-            <div class="client-name">${client.name}</div>
-            <span class="status ${client.status}" tabindex="0" data-tooltip="${tooltip}">
-              ${statusIcon(client.status)}
-            </span>
-          </div>
-
-          <div class="client-path">${client.path}</div>
-
-          <div class="buttons">
-            <a class="button launch" href="./${client.path}/">Launch</a>
-            <a class="button" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients/tree/main/${client.path}" target="_blank" rel="noopener">Files</a>
-          </div>
+    function renderAuthArea() {
+      if (!Auth.user) {
+        authArea.innerHTML = `
+          <button class="btn" id="openLogin">Log in</button>
+          <button class="btn primary" id="openSignup">Sign up</button>
         `;
+        document.getElementById("openLogin").addEventListener("click", () => openModal("login"));
+        document.getElementById("openSignup").addEventListener("click", () => openModal("signup"));
+        return;
+      }
 
-        clientsBox.appendChild(card);
+      const label = Auth.user.username || Auth.user.email;
+      authArea.innerHTML = `
+        <div class="user-menu">
+          <button class="user-chip" id="userChipBtn">
+            <span class="user-avatar">${initials(Auth.user)}</span>
+            <span>${escapeHtml(label)}</span>
+          </button>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="email">${escapeHtml(Auth.user.email)}</div>
+            <button id="logoutBtn">Log out</button>
+          </div>
+        </div>
+      `;
+      const chip = document.getElementById("userChipBtn");
+      const dropdown = document.getElementById("userDropdown");
+      chip.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("open");
+      });
+      document.addEventListener("click", () => dropdown.classList.remove("open"), { once: true });
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await Auth.logout();
+        renderAuthArea();
+        renderDetail();
+        showBanner("ok", "You've been logged out.");
       });
     }
 
-    search.addEventListener("input", renderClients);
-    renderClients();
+    /* ============ banner ============ */
+
+    const banner = document.getElementById("banner");
+    const bannerInner = document.getElementById("bannerInner");
+    const bannerText = document.getElementById("bannerText");
+    document.getElementById("bannerClose").addEventListener("click", () => banner.classList.remove("show"));
+
+    function showBanner(type, text) {
+      bannerInner.className = "banner-inner " + type;
+      bannerText.textContent = text;
+      banner.classList.add("show");
+    }
+
+    /* ============ modal ============ */
+
+    const overlay = document.getElementById("overlay");
+    const views = ["login", "signup", "recovery", "forgot", "reset"];
+
+    function openModal(view) {
+      overlay.classList.add("open");
+      showView(view);
+    }
+
+    function closeModal() {
+      overlay.classList.remove("open");
+    }
+
+    function showView(view) {
+      views.forEach((v) => document.getElementById("view-" + v).classList.toggle("active", v === view));
+    }
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeModal();
+    });
+    document.querySelectorAll("[data-close]").forEach((btn) => btn.addEventListener("click", closeModal));
+    document.querySelectorAll("[data-view]").forEach((btn) => {
+      btn.addEventListener("click", () => showView(btn.dataset.view));
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    function setFormError(id, message) {
+      const el = document.getElementById(id);
+      if (!message) { el.classList.remove("show"); el.textContent = ""; return; }
+      el.textContent = message;
+      el.classList.add("show");
+    }
+
+    function setFormNote(id, message) {
+      const el = document.getElementById(id);
+      if (!message) { el.classList.remove("show"); el.textContent = ""; return; }
+      el.textContent = message;
+      el.classList.add("show");
+    }
+
+    /* ---- login ---- */
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setFormError("login-error", "");
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      const btn = e.target.querySelector("button");
+      btn.disabled = true;
+      try {
+        await Auth.login(email, password);
+        renderAuthArea();
+        renderDetail();
+        closeModal();
+        e.target.reset();
+        showBanner("ok", `Welcome back, ${Auth.user.username || Auth.user.email}.`);
+      } catch (err) {
+        setFormError("login-error", err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    /* ---- signup ---- */
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setFormError("signup-error", "");
+      const username = document.getElementById("signup-username").value.trim();
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value;
+      if (password.length < 8) {
+        setFormError("signup-error", "Password must be at least 8 characters.");
+        return;
+      }
+      const btn = e.target.querySelector("button");
+      btn.disabled = true;
+      try {
+        const data = await Auth.signup(username, email, password);
+        e.target.reset();
+        const codesBox = document.getElementById("recoveryCodes");
+        codesBox.innerHTML = data.recoveryCodes.map((c) => `<span>${escapeHtml(c)}</span>`).join("");
+        showView("recovery");
+      } catch (err) {
+        setFormError("signup-error", err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById("recoveryDoneBtn").addEventListener("click", () => {
+      closeModal();
+      showBanner("ok", "Account created. Check your email to verify it, then log in.");
+    });
+
+    /* ---- forgot password ---- */
+
+    document.getElementById("forgotForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setFormError("forgot-error", "");
+      setFormNote("forgot-note", "");
+      const email = document.getElementById("forgot-email").value.trim();
+      const btn = e.target.querySelector("button");
+      btn.disabled = true;
+      try {
+        await Auth.requestPasswordReset(email);
+        setFormNote("forgot-note", "If an account exists for that email, a reset link is on its way.");
+        e.target.reset();
+      } catch (err) {
+        setFormError("forgot-error", err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    /* ---- reset password (from emailed link) ---- */
+
+    let resetToken = "";
+
+    document.getElementById("resetForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setFormError("reset-error", "");
+      const newPassword = document.getElementById("reset-password").value;
+      if (newPassword.length < 8) {
+        setFormError("reset-error", "Password must be at least 8 characters.");
+        return;
+      }
+      const btn = e.target.querySelector("button");
+      btn.disabled = true;
+      try {
+        await Auth.resetPassword(resetToken, newPassword);
+        closeModal();
+        showBanner("ok", "Password updated. You can log in with your new password now.");
+      } catch (err) {
+        setFormError("reset-error", err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    /* ============ query-param handling (verify-email / reset-password redirects) ============ */
+
+    function handleQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      const verified = params.get("verified");
+      const reset = params.get("reset");
+
+      if (verified) {
+        const messages = {
+          "1": ["ok", "Email verified. You can log in now."],
+          "expired": ["error", "That verification link expired. Request a new one by trying to log in."],
+          "invalid": ["error", "That verification link isn't valid."],
+          "missing_token": ["error", "That verification link is missing its token."],
+        };
+        const [type, text] = messages[verified] || ["error", "Could not verify that email."];
+        showBanner(type, text);
+        if (type === "ok") openModal("login");
+      }
+
+      if (reset) {
+        resetToken = reset;
+        openModal("reset");
+      }
+
+      if (verified || reset) {
+        params.delete("verified");
+        params.delete("reset");
+        const cleanUrl = window.location.pathname + (params.toString() ? `?${params}` : "");
+        history.replaceState({}, "", cleanUrl);
+      }
+    }
+
+    /* ============ client directory (master-detail launcher) ============ */
+
+    const statusMeta = {
+      good: { label: "Verified", pill: "good" },
+      warn: { label: "Playable", pill: "warn" },
+      bad: { label: "Broken", pill: "bad" },
+    };
+
+    const badgeColors = ["#e8ab4d", "#6fb3e0", "#6fd6a8", "#e07a9b", "#b39ce0", "#e0a86f"];
+
+    const clients = [
+      { name: "Aero Client", path: "AeroClient", status: "warn", note: "A 1.12.2-based client aiming for a clean mod menu. Runs fine on most machines but chugs hard on Chromebooks." },
+      { name: "Astra Client 2", path: "Astra2", status: "warn", note: "The second iteration of Astra. Same Chromebook slowdown as the original." },
+      { name: "Astra Client", path: "AstraClient", status: "warn", note: "Decent single-player performance, but the multiplayer connection path is currently broken." },
+      { name: "DragonX Client", path: "DragonXClient", status: "warn", note: "Multiplayer-focused build. Singleplayer mode is missing entirely and the mod menu can glitch out." },
+      { name: "Flame Client", path: "FlameClient", status: "warn", note: "Feature-rich on paper, but frame drops are common and singleplayer isn't available." },
+      { name: "Kone Client", path: "KoneClient", status: "bad", note: "Currently fails to launch at all. Left in the index for tracking, not recommended." },
+      { name: "Pi Client", path: "PiClient", status: "warn", note: "Lightweight client. No singleplayer support yet, and the mod menu has occasional glitches." },
+      { name: "Pixel Client", path: "PixelClient", status: "good", note: "Consistently boosts FPS and ships with a full feature set. The most reliable client in this list." },
+      { name: "Resent Client", path: "ResentClient", status: "good", note: "Well-optimized and fully featured, on par with Pixel Client for reliability." },
+      { name: "Shadow Client", path: "ShadowClient", status: "warn", note: "Runs close to vanilla Eaglercraft — stable, but without real added modifications." },
+      { name: "Starlike Client", path: "StarlikeClient", status: "bad", note: "Still work in progress. Does not run in its current state." },
+      { name: "Tuff Client", path: "TuffClient", status: "warn", note: "Functional but the UI is unconventional, and it doesn't do any FPS optimization." },
+      { name: "Uwu Client", path: "UwuClient", status: "warn", note: "Another close-to-vanilla client with minimal modifications over stock Eaglercraft." },
+    ];
+
+    let selectedPath = clients[0].path;
+    let statusFilter = "all";
+
+    const clientListEl = document.getElementById("clientList");
+    const listEmpty = document.getElementById("listEmpty");
+    const sidebarCount = document.getElementById("sidebarCount");
+    const search = document.getElementById("search");
+    const detail = document.getElementById("detail");
+    const filtersEl = document.getElementById("filters");
+
+    function getFiltered() {
+      const query = search.value.toLowerCase().trim();
+      return clients.filter((c) => {
+        const matchesStatus = statusFilter === "all" || c.status === statusFilter;
+        const matchesQuery = !query ||
+          c.name.toLowerCase().includes(query) ||
+          c.path.toLowerCase().includes(query) ||
+          c.note.toLowerCase().includes(query);
+        return matchesStatus && matchesQuery;
+      });
+    }
+
+    function renderList(filtered) {
+      sidebarCount.textContent = `${filtered.length}/${clients.length}`;
+      listEmpty.style.display = filtered.length ? "none" : "block";
+
+      clientListEl.innerHTML = filtered.map((client) => `
+        <div class="client-row ${client.path === selectedPath ? "active" : ""}" data-path="${client.path}" tabindex="0" role="button">
+          <span class="row-dot ${client.status}"></span>
+          <div class="row-text">
+            <div class="row-name">${escapeHtml(client.name)}</div>
+            <div class="row-path">${escapeHtml(client.path)}</div>
+          </div>
+        </div>
+      `).join("");
+
+      clientListEl.querySelectorAll(".client-row").forEach((row) => {
+        row.addEventListener("click", () => selectClient(row.dataset.path));
+        row.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectClient(row.dataset.path); }
+        });
+      });
+    }
+
+    function renderDetail() {
+      const client = clients.find((c) => c.path === selectedPath);
+      if (!client) {
+        detail.innerHTML = `<div class="detail-empty">No client selected. Pick one from the list.</div>`;
+        return;
+      }
+
+      const meta = statusMeta[client.status];
+      const color = badgeColors[clients.indexOf(client) % badgeColors.length];
+      const loggedIn = Boolean(Auth.user);
+
+      const launchHtml = loggedIn
+        ? `<a class="btn-launch" href="./${client.path}/">Launch ${escapeHtml(client.name)}</a>`
+        : `<button class="btn-launch locked" id="lockedLaunchBtn" type="button">
+             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+             Log in to launch
+           </button>`;
+
+      detail.innerHTML = `
+        <div class="detail-inner">
+          <div class="detail-head">
+            <span class="detail-badge" style="background:${color}">${client.name.slice(0, 1)}</span>
+            <div style="flex:1; min-width:0;">
+              <div style="display:flex; align-items:flex-start; gap:10px;">
+                <div class="detail-name">${escapeHtml(client.name)}</div>
+                <span class="pill ${meta.pill}">${meta.label}</span>
+              </div>
+              <div class="detail-path">${escapeHtml(client.path)}/</div>
+            </div>
+          </div>
+
+          <p class="detail-note">${escapeHtml(client.note)}</p>
+
+          <div class="detail-actions">
+            ${launchHtml}
+            <a class="btn-files" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients/tree/main/${client.path}" target="_blank" rel="noopener">View files</a>
+          </div>
+
+          <div class="spec-list">
+            <div class="spec-row"><span class="spec-key">Status</span><span class="spec-val">${meta.label}</span></div>
+            <div class="spec-row"><span class="spec-key">Folder</span><span class="spec-val">/${escapeHtml(client.path)}</span></div>
+            <div class="spec-row"><span class="spec-key">Login required to launch</span><span class="spec-val">${loggedIn ? "Signed in" : "Yes"}</span></div>
+          </div>
+        </div>
+      `;
+
+      if (!loggedIn) {
+        document.getElementById("lockedLaunchBtn").addEventListener("click", () => {
+          openModal("login");
+          showBanner("error", "Log in to your LowFrame account to launch a client.");
+        });
+      }
+    }
+
+    function renderAll() {
+      const filtered = getFiltered();
+      if (!filtered.find((c) => c.path === selectedPath)) {
+        selectedPath = filtered[0] ? filtered[0].path : null;
+      }
+      renderList(filtered);
+      renderDetail();
+    }
+
+    function selectClient(path) {
+      selectedPath = path;
+      renderAll();
+    }
+
+    search.addEventListener("input", renderAll);
+    filtersEl.addEventListener("click", (e) => {
+      const chip = e.target.closest(".filter-chip");
+      if (!chip) return;
+      statusFilter = chip.dataset.status;
+      filtersEl.querySelectorAll(".filter-chip").forEach((c) => c.classList.toggle("active", c === chip));
+      renderAll();
+    });
+
+    /* ============ boot ============ */
+
+    renderAuthArea();
+    renderAll();
+    handleQueryParams();
+    Auth.refresh().then(() => {
+      renderAuthArea();
+      renderDetail();
+    });
   </script>
 </body>
 </html>
