@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EaglerCustomClients</title>
+  <title>EaglerClientsArchive</title>
   <meta name="description" content="A curated index of custom Eaglercraft clients, with real notes on what actually works." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -343,12 +343,6 @@
       color: #fff;
     }
 
-    .row-path {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-faint);
-    }
-
     .list-empty {
       display: none;
       color: var(--text-faint);
@@ -402,12 +396,6 @@
       color: #fff;
       line-height: 1.15;
       margin: 2px 0 6px;
-    }
-
-    .detail-path {
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      color: var(--text-faint);
     }
 
     .pill {
@@ -490,33 +478,6 @@
     .btn-files:hover {
       border-color: var(--border-hover);
       color: var(--text);
-    }
-
-    .spec-list {
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-    }
-
-    .spec-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 9px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-
-    .spec-row:last-child {
-      border-bottom: none;
-    }
-
-    .spec-key {
-      color: var(--text-faint);
-    }
-
-    .spec-val {
-      color: var(--text-dim);
-      font-family: var(--font-mono);
-      text-align: right;
     }
 
     .detail-empty {
@@ -879,7 +840,7 @@
         <rect width="32" height="32" rx="8" fill="#e8ab4d" />
         <path d="M8 21L16 9L24 21H19.5L16 15.5L12.5 21H8Z" fill="#0a0b0e" />
       </svg>
-      <span class="brand-word">Eagler<span class="dim">CustomClients</span></span>
+      <span class="brand-word">Eagler<span class="dim">ClientsArchive</span></span>
     </a>
     <div class="header-right">
       <a class="github-link" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients" target="_blank" rel="noopener">GitHub</a>
@@ -1346,6 +1307,7 @@
     const badgeColors = ["#e8ab4d", "#6fb3e0", "#6fd6a8", "#e07a9b", "#b39ce0", "#e0a86f"];
 
     const clients = [
+      { name: "EaglerCraft 1.8.8", path: "1.8.8", status: "good", note: "Stock Eaglercraft 1.8.8. No mods, no login gate — just vanilla singleplayer and multiplayer.", requiresLogin: false },
       { name: "Aero Client", path: "AeroClient", status: "warn", note: "A 1.12.2-based client aiming for a clean mod menu. Runs fine on most machines but chugs hard on Chromebooks." },
       { name: "Astra Client 2", path: "Astra2", status: "warn", note: "The second iteration of Astra. Same Chromebook slowdown as the original." },
       { name: "Astra Client", path: "AstraClient", status: "warn", note: "Decent single-player performance, but the multiplayer connection path is currently broken." },
@@ -1355,10 +1317,8 @@
       { name: "Pi Client", path: "PiClient", status: "warn", note: "Lightweight client. No singleplayer support yet, and the mod menu has occasional glitches." },
       { name: "Pixel Client", path: "PixelClient", status: "good", note: "Consistently boosts FPS and ships with a full feature set. The most reliable client in this list." },
       { name: "Resent Client", path: "ResentClient", status: "good", note: "Well-optimized and fully featured, on par with Pixel Client for reliability." },
-      { name: "Shadow Client", path: "ShadowClient", status: "warn", note: "Runs close to vanilla Eaglercraft — stable, but without real added modifications." },
       { name: "Starlike Client", path: "StarlikeClient", status: "bad", note: "Still work in progress. Does not run in its current state." },
       { name: "Tuff Client", path: "TuffClient", status: "warn", note: "Functional but the UI is unconventional, and it doesn't do any FPS optimization." },
-      { name: "Uwu Client", path: "UwuClient", status: "warn", note: "Another close-to-vanilla client with minimal modifications over stock Eaglercraft." },
     ];
 
     let selectedPath = clients[0].path;
@@ -1392,7 +1352,6 @@
           <span class="row-dot ${client.status}"></span>
           <div class="row-text">
             <div class="row-name">${escapeHtml(client.name)}</div>
-            <div class="row-path">${escapeHtml(client.path)}</div>
           </div>
         </div>
       `).join("");
@@ -1414,9 +1373,10 @@
 
       const meta = statusMeta[client.status];
       const color = badgeColors[clients.indexOf(client) % badgeColors.length];
-      const loggedIn = Boolean(Auth.user);
+      const needsLogin = client.requiresLogin !== false;
+      const canLaunch = !needsLogin || Boolean(Auth.user);
 
-      const launchHtml = loggedIn
+      const launchHtml = canLaunch
         ? `<a class="btn-launch" href="./${client.path}/">Launch ${escapeHtml(client.name)}</a>`
         : `<button class="btn-launch locked" id="lockedLaunchBtn" type="button">
              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
@@ -1432,7 +1392,6 @@
                 <div class="detail-name">${escapeHtml(client.name)}</div>
                 <span class="pill ${meta.pill}">${meta.label}</span>
               </div>
-              <div class="detail-path">${escapeHtml(client.path)}/</div>
             </div>
           </div>
 
@@ -1442,16 +1401,10 @@
             ${launchHtml}
             <a class="btn-files" href="https://github.com/Astro-Tech-Inc/EaglerCustomClients/tree/main/${client.path}" target="_blank" rel="noopener">View files</a>
           </div>
-
-          <div class="spec-list">
-            <div class="spec-row"><span class="spec-key">Status</span><span class="spec-val">${meta.label}</span></div>
-            <div class="spec-row"><span class="spec-key">Folder</span><span class="spec-val">/${escapeHtml(client.path)}</span></div>
-            <div class="spec-row"><span class="spec-key">Login required to launch</span><span class="spec-val">${loggedIn ? "Signed in" : "Yes"}</span></div>
-          </div>
         </div>
       `;
 
-      if (!loggedIn) {
+      if (!canLaunch) {
         document.getElementById("lockedLaunchBtn").addEventListener("click", () => {
           openModal("login");
           showBanner("error", "Log in to your LowFrame account to launch a client.");
